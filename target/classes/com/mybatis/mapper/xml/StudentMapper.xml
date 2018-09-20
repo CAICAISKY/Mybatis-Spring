@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mybatis.mapper.dao.StudentMapper">
+    <!--结果映射-->
+    <resultMap id="studentMap" type="Student">
+        <id property="id" column="stu_id"/>
+        <result property="name" column="stu_name"/>
+        <result property="age" column="stu_age"/>
+    </resultMap>
+
+    <!--公用字段-->
+    <sql id="baseColumns">
+        stu_id, stu_name, stu_age
+    </sql>
+
+    <!--公用类成员-->
+    <sql id="baseParams">
+        #{id}, #{name}, #{age}
+    </sql>
+
+    <!--增-->
+    <insert id="addStudent" parameterType="Student">
+        INSERT INTO student (<include refid="baseColumns"/>) VALUES (<include refid="baseParams"/>)
+    </insert>
+
+    <!--删-->
+    <delete id="delStudent" parameterType="Student">
+        DELETE FROM student WHERE stu_id = #{id}
+    </delete>
+
+    <!--改-->
+    <update id="updateStudent" parameterType="Student">
+        UPDATE student SET stu_id = #{id}, stu_name = #{name}, stu_age = #{age} WHERE stu_id = #{id}
+    </update>
+
+    <!--查-->
+    <select id="getStudents" parameterType="Student" resultMap="studentMap">
+        SELECT <include refid="baseColumns"/> FROM student
+        <where>
+            <if test="id != null">
+                AND stu_id = #{id}
+            </if>
+            <if test="name != null">
+                AND stu_name = #{name}
+            </if>
+            <if test="age != null">
+                AND stu_age = #{age}
+            </if>>
+        </where>
+    </select>
+</mapper>
